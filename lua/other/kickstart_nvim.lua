@@ -295,11 +295,16 @@ require('lazy').setup({
     build = ':TSUpdate',
     lazy = false,
     config = function()
+      local ts = require('nvim-treesitter')
       -- Install parsers upfront
-      require('nvim-treesitter').install({
-        'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx',
-        'javascript', 'typescript', 'vimdoc', 'vim', 'bash',
-      })
+      if type(ts.install) ~= 'function' then
+        vim.notify('nvim-treesitter: install() not available — run :Lazy update', vim.log.levels.WARN)
+      else
+        ts.install({
+          'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx',
+          'javascript', 'typescript', 'vimdoc', 'vim', 'bash',
+        })
+      end
 
       vim.api.nvim_create_autocmd('FileType', {
         group = vim.api.nvim_create_augroup('TreesitterSetup', { clear = true }),
