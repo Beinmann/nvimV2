@@ -439,6 +439,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
+-- Compatibility shim: telescope calls ft_to_lang which was removed in Neovim 0.11+
+if vim.treesitter.language and not vim.treesitter.language.ft_to_lang then
+  vim.treesitter.language.ft_to_lang = vim.treesitter.language.get_lang
+end
+
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
