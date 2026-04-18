@@ -23,7 +23,7 @@ vim.opt.wrap = false
 vim.opt.swapfile = false
 vim.opt.backup = false
 --vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir" -- From the original file (but I think it is meant for Unix like systems)
-vim.opt.undodir = vim.fn.stdpath('data') .. "\\undodir"  -- For Windows (From ChatGPT)
+vim.opt.undodir = vim.fn.stdpath('data') .. '/undodir'
 -- local undodir_path = vim.opt.undodir:get() -- Check if the undodir was correctly set (From ChatGPT)
 -- print("Undodir Path:", undodir_path) -- Check if the undodir was correctly set (From ChatGPT)
 -- print("Is Directory:", vim.fn.isdirectory(undodir_path)) -- Check if the undodir was correctly set (From ChatGPT)
