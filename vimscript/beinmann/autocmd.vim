@@ -1,5 +1,8 @@
-autocmd BufWinLeave *.* mkview
-autocmd BufWinEnter *.* silent! loadview
+augroup ViewPersistence
+    autocmd!
+    autocmd BufWinLeave *.* mkview
+    autocmd BufWinEnter *.* silent! loadview
+augroup END
 
 augroup LocListMapping
     autocmd!
@@ -13,8 +16,10 @@ function! OpenNetrwIfBuffer()
     endif
 endfunction
 
-" Execute the function on Vim startup
-autocmd VimEnter * call OpenNetrwIfBuffer()
+augroup OpenNetrw
+    autocmd!
+    autocmd VimEnter * call OpenNetrwIfBuffer()
+augroup END
 
 
 
