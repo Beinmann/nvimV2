@@ -1,11 +1,9 @@
 Autosave_enabled = false
 
-
 function _G.toggle_autosave()
   if Autosave_enabled then
     vim.api.nvim_set_keymap('i', '<C-c>', '<C-c>', { noremap = true, silent = true })
     vim.cmd('autocmd! AutoSaveGroup')
-    -- vim.api.nvim_set_keymap('i', '<C-c>', '<C-o>:update<CR><C-c>', { noremap = true, silent = true })
     Autosave_enabled = false
     print("AutoSave disabled")
   else
@@ -13,7 +11,6 @@ function _G.toggle_autosave()
     vim.cmd('augroup AutoSaveGroup')
     vim.cmd('autocmd!')
     vim.cmd('autocmd InsertLeave * update')
-    -- vim.cmd('inoremap <C-c> <Esc>')
     vim.cmd('augroup END')
     Autosave_enabled = true
     print("AutoSave enabled")
