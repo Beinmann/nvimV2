@@ -17,8 +17,6 @@ vim.opt.expandtab = true
 
 vim.opt.smartindent = true
 
-vim.opt.wrap = false
-
 -- Might disable this again. This is for having no direct backups of files but a long undotree with the undotree plugin. I haven't tested this out yet. If the undotree would persist in between sessions without too much hassle that would be great
 vim.opt.swapfile = false
 vim.opt.backup = false
@@ -42,16 +40,12 @@ vim.opt.updatetime = 50       -- Fast update time (but no idea for what)
 
 -- vim.opt.colorcolumn = "80"    -- Creates a column at 80 characters. might keep might not
 
-vim.g.mapleader = " "
-
-
-
 
 
 ---- My own sets (a lot of them googled or from ChatGPT) ----
 
 -- Vim uses windows clipboard
-vim.o.clipboard = vim.o.clipboard .. 'unnamedplus'
+vim.o.clipboard = 'unnamedplus'
 
 vim.o.whichwrap = vim.o.whichwrap .. '<,>,h,l'
 

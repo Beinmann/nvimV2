@@ -1,12 +1,6 @@
--- Set k and j to go up and down visual lines (instead of actual lines). Mostly relevant if there are line wraps
--- TODO learn what the difference between noremap and nnoremap is and what the <silent> does here
-vim.api.nvim_set_keymap('n', 'k', 'gk', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', 'j', 'gj', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', 'k', 'gk', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', 'j', 'gj', { noremap = true, silent = true })
-
--- Makes it so you can also start (:) commands by simply pressing space (might change)
-vim.api.nvim_set_keymap('n', '<space>', ':', { noremap = true, silent = true })
+-- k/j move by visual lines in visual mode (normal mode handled by kickstart with v:count guard)
+vim.keymap.set('v', 'k', 'gk', { noremap = true, silent = true })
+vim.keymap.set('v', 'j', 'gj', { noremap = true, silent = true })
 
 -- Remap Ctrl S to saving the file (Usually Ctrl s is used for pausing output of the console or something
 vim.api.nvim_set_keymap('i', '<C-s>', '<ESC>:w<CR>', { noremap = true, silent = true })
@@ -30,15 +24,14 @@ vim.keymap.set("n", "<leader>pv", vim.cmd.Ex) -- From ThePrimeagen
 -- <leader>q Slightly more complicated function (From ChatGPT)
 -- When pressing that combinations if there are multiple windows open then call :q
 -- otherwise call :Ex
-vim.api.nvim_set_keymap('n', '<leader>q', ':lua CloseOrExplore()<CR>', { noremap = true, silent = true })
-
-function CloseOrExplore()
+local function close_or_explore()
   if vim.fn.winnr('$') > 1 then
     vim.cmd('wincmd q')
   else
     vim.cmd('Explore')
   end
 end
+vim.keymap.set('n', '<leader>q', close_or_explore, { noremap = true, silent = true })
 
 
 vim.api.nvim_set_keymap('n', 'K', '10k', { noremap = true, silent = true })

@@ -319,10 +319,7 @@ require('lazy').setup({
     end,
   },
 
-  {
-    'nvim-tree/nvim-web-devicons',
-    'echasnovski/mini.icons'
-  },
+  { 'echasnovski/mini.icons' },
 
 --  {
 --    'romgrk/barbar.nvim',
@@ -684,8 +681,6 @@ local servers = {
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-
-require("mason").setup()
 
 -- Ensure the servers above are installed
 local mason_lspconfig = require 'mason-lspconfig'
