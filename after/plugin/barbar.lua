@@ -1,6 +1,0 @@
--- vim.g.barbar_auto_setup = false -- disable auto-setup
--- 
--- require'barbar'.setup {
---     focus_on_close = 'previous',
---     insert_at_end = true,
--- }

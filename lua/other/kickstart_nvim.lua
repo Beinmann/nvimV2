@@ -74,7 +74,10 @@ require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
   -- Git related plugins
-  'tpope/vim-fugitive',
+  {
+    'tpope/vim-fugitive',
+    keys = { { '<leader>gs', vim.cmd.Git, desc = '[G]it [S]tatus' } },
+  },
   'tpope/vim-rhubarb',
 
   -- Detect tabstop and shiftwidth automatically (TODO: find out how to disable this plugin by default and enable this only for specific files, cause usually I wanna have a consistent tab width regardless of what the file used so far)
@@ -138,13 +141,32 @@ require('lazy').setup({
     -- Adds git related signs to the gutter, as well as utilities for managing changes (TODO: go through the mappings here and see if they are useful)
     'lewis6991/gitsigns.nvim',
     opts = {
-      -- See `:help gitsigns.txt`
       signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
+        add          = { text = '│' },
+        change       = { text = '│' },
+        delete       = { text = '_' },
+        topdelete    = { text = '‾' },
         changedelete = { text = '~' },
+        untracked    = { text = '┆' },
+      },
+      signcolumn = true,
+      watch_gitdir = { follow_files = true },
+      attach_to_untracked = true,
+      current_line_blame = false,
+      current_line_blame_opts = {
+        virt_text = true,
+        virt_text_pos = 'eol',
+        delay = 1000,
+        ignore_whitespace = false,
+      },
+      current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
+      max_file_length = 40000,
+      preview_config = {
+        border = 'single',
+        style = 'minimal',
+        relative = 'cursor',
+        row = 0,
+        col = 1,
       },
       on_attach = function(bufnr)
         local gs = package.loaded.gitsigns
@@ -279,14 +301,22 @@ require('lazy').setup({
 --   },
   {
     'mbbill/undotree',
+    keys = { { '<leader>u', vim.cmd.UndotreeToggle, desc = '[U]ndotree Toggle' } },
   },
 
   {
     'rose-pine/neovim',
-		as = 'rose-pine',
-		config=function()
-			vim.cmd('colorscheme rose-pine')
-		end
+    name = 'rose-pine',
+    config = function()
+      require('rose-pine').setup({
+        dim_nc_background = true,
+        disable_background = false,
+        disable_float_background = false,
+      })
+      vim.cmd('colorscheme rose-pine')
+      vim.api.nvim_set_hl(0, 'Normal', { bg = nil })
+      vim.api.nvim_set_hl(0, 'NormalFloat', { bg = nil })
+    end,
   },
 
   {
@@ -470,6 +500,14 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
 vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps, { desc = '[S]how [K]eymaps' })
 vim.keymap.set('n', '<leader>km', require('telescope.builtin').keymaps, { desc = 'Show [K]ey[M]aps' })
+
+-- Personal telescope keymaps
+vim.keymap.set('n', '<leader>pf', require('telescope.builtin').find_files, { desc = '[P]roject [F]iles' })
+vim.keymap.set('n', '<C-p>', require('telescope.builtin').git_files, { desc = 'Search Git Files' })
+vim.keymap.set('n', '<leader>ps', function()
+  require('telescope.builtin').grep_string({ search = vim.fn.input('Grep > ') })
+end, { desc = '[P]roject [S]earch (prompt)' })
+vim.keymap.set('n', '<leader>pp', require('telescope.builtin').buffers, { desc = '[P]roject [P]ickers (buffers)' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
