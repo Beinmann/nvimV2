@@ -453,6 +453,9 @@ end
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
   defaults = {
+    preview = {
+      treesitter = false,
+    },
     mappings = {
       i = {
         ['<C-u>'] = false,

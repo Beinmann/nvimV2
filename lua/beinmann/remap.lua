@@ -33,3 +33,6 @@ local function close_or_explore()
 end
 vim.keymap.set('n', '<leader>q', close_or_explore, { noremap = true, silent = true })
 
+-- Switch to last used buffer
+vim.keymap.set('n', '<leader><Tab>', '<C-^>', { noremap = true, silent = true, desc = 'Switch to last buffer' })
+
