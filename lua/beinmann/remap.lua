@@ -33,8 +33,3 @@ local function close_or_explore()
 end
 vim.keymap.set('n', '<leader>q', close_or_explore, { noremap = true, silent = true })
 
-
-vim.api.nvim_set_keymap('n', 'K', '10k', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', 'K', '10k', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', 'J', '10j', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', 'J', '10j', { noremap = true, silent = true })
