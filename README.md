@@ -93,7 +93,7 @@ init.lua                        Entry point — loads all modules in order
 | `<leader>sh` | Search help tags |
 | `<leader>sd` | Search diagnostics |
 | `<leader>sr` | Resume last search |
-| `<leader>sk` | Show all keymaps |
+| `<leader>sk` | Show all keymaps (show keys) |
 | `<leader>/` | Fuzzy search current buffer |
 | `<leader>gf` | Find git files |
 
