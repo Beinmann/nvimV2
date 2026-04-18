@@ -4,6 +4,45 @@
 -- See the kickstart.nvim README for more information
 return {
   {
+    'folke/persistence.nvim',
+    lazy = false,
+    opts = {},
+    config = function()
+      require('persistence').setup()
+      -- Auto-restore session when opening nvim with no file arguments
+      local function discard_session()
+        require('persistence').stop()
+        local session_dir = vim.fn.stdpath('state') .. '/sessions/'
+        local session_file = session_dir .. vim.fn.getcwd():gsub('/', '%%') .. '.vim'
+        if vim.fn.filereadable(session_file) == 1 then
+          vim.fn.delete(session_file)
+        end
+      end
+
+      vim.keymap.set('n', '<leader>qd', function()
+        discard_session()
+        vim.cmd('qa')
+      end, { desc = '[Q]uit: [D]iscard session' })
+
+      vim.api.nvim_create_user_command('Qd', function(opts)
+        discard_session()
+        vim.cmd(opts.bang and 'qa!' or 'qa')
+      end, { bang = true })
+
+      vim.cmd('cnoreabbrev qd Qd')
+      vim.cmd('cnoreabbrev qd! Qd!')
+
+      vim.api.nvim_create_autocmd('VimEnter', {
+        nested = true,
+        callback = function()
+          if vim.fn.argc() == 0 then
+            require('persistence').load()
+          end
+        end,
+      })
+    end,
+  },
+  {
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
     dependencies = { 'nvim-lua/plenary.nvim' },
