@@ -35,4 +35,28 @@ vim.keymap.set('n', '<leader>q', close_or_explore, { noremap = true, silent = tr
 
 -- Switch to last used buffer
 vim.keymap.set('n', '<leader><Tab>', '<C-^>', { noremap = true, silent = true, desc = 'Switch to last buffer' })
+vim.keymap.set('n', '<leader>-', '<C-^>', { noremap = true, silent = true, desc = 'Switch to last buffer' })
+
+-- H/L go to start/end of visual line
+vim.keymap.set('n', 'H', 'g0', { noremap = true, silent = true, desc = 'Go to start of visual line' })
+vim.keymap.set('n', 'L', 'g$', { noremap = true, silent = true, desc = 'Go to end of visual line' })
+
+-- jk exits insert mode
+vim.keymap.set('i', 'jk', '<Esc>', { noremap = true, silent = true, desc = 'Exit insert mode' })
+
+-- Paste in visual mode without yanking the replaced text
+vim.keymap.set('v', 'p', '"_dP', { noremap = true, silent = true, desc = 'Paste without yanking replaced text' })
+
+-- C deletes current char and enters insert mode
+vim.keymap.set('n', 'C', 'xi', { noremap = true, silent = true, desc = 'Delete char and insert' })
+
+-- x deletes without yanking
+vim.keymap.set('n', 'x', '"_x', { noremap = true, silent = true, desc = 'Delete char without yanking' })
+
+-- Buffer management
+vim.keymap.set('n', '<leader>bl', ':ls<CR>:b<Space>', { noremap = true, desc = 'List buffers and switch' })
+vim.keymap.set('n', '<leader>bb', ':enew<CR>', { noremap = true, silent = true, desc = 'Open new empty buffer' })
+
+-- § acts as @ (macro execute) — easier to reach on some keyboards
+vim.keymap.set('n', '§', '@', { noremap = true, silent = true, desc = 'Execute macro' })
 
