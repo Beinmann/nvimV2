@@ -13,6 +13,7 @@
 nnoremap H g0
 nnoremap L g$
 
+" jk exits insert mode
 inoremap jk <Esc>
 
 " In visual mode if you paste over something then do not save that thing you
