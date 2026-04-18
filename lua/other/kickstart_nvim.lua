@@ -295,69 +295,27 @@ require('lazy').setup({
     build = ':TSUpdate',
     lazy = false,
     config = function()
-      local ok, configs = pcall(require, 'nvim-treesitter.config')
-      if not ok then
-        vim.notify('nvim-treesitter.config failed: ' .. tostring(configs), vim.log.levels.ERROR)
-        return
-      end
-      configs.setup {
-        ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
-        auto_install = true,
-        sync_install = false,
-        ignore_install = {},
-        highlight = { enable = true },
-        indent = { enable = true },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = '<c-space>',
-            node_incremental = '<c-space>',
-            scope_incremental = '<c-s>',
-            node_decremental = '<M-space>',
-          },
-        },
-        textobjects = {
-          select = {
-            enable = true,
-            lookahead = true,
-            keymaps = {
-              ['aa'] = '@parameter.outer',
-              ['ia'] = '@parameter.inner',
-              ['af'] = '@function.outer',
-              ['if'] = '@function.inner',
-              ['ac'] = '@class.outer',
-              ['ic'] = '@class.inner',
-            },
-          },
-          move = {
-            enable = true,
-            set_jumps = true,
-            goto_next_start = {
-              [']m'] = '@function.outer',
-              [']]'] = '@class.outer',
-            },
-            goto_next_end = {
-              [']M'] = '@function.outer',
-              [']['] = '@class.outer',
-            },
-            goto_previous_start = {
-              ['[m'] = '@function.outer',
-              ['[['] = '@class.outer',
-            },
-            goto_previous_end = {
-              ['[M'] = '@function.outer',
-              ['[]'] = '@class.outer',
-            },
-          },
-          swap = {
-            enable = true,
-            swap_next = {},
-            swap_previous = {
-              ['<leader>A'] = '@parameter.inner',
-            },
-          },
-        },
-      }
+      -- Install parsers upfront
+      require('nvim-treesitter').install({
+        'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx',
+        'javascript', 'typescript', 'vimdoc', 'vim', 'bash',
+      })
+
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('TreesitterSetup', { clear = true }),
+        callback = function(ev)
+          local lang = vim.treesitter.language.get_lang(ev.match) or ev.match
+          local ok = pcall(vim.treesitter.language.add, lang)
+          if not ok then
+            -- Parser not installed yet — install and wait for next open
+            require('nvim-treesitter').install({ lang })
+            return
+          end
+          -- Enable highlighting and treesitter indentation
+          pcall(vim.treesitter.start, ev.buf, lang)
+          vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
+      })
     end,
   },
 
