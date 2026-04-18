@@ -536,11 +536,11 @@ vim.keymap.set('n', '<leader>km', require('telescope.builtin').keymaps, { desc =
 
 -- Personal telescope keymaps
 vim.keymap.set('n', '<leader>pf', require('telescope.builtin').find_files, { desc = '[P]roject [F]iles' })
-vim.keymap.set('n', '<C-p>', require('telescope.builtin').git_files, { desc = 'Search Git Files' })
+vim.keymap.set('n', '<C-p>', require('telescope.builtin').find_files, { desc = 'Search Files' })
 vim.keymap.set('n', '<leader>ps', function()
   require('telescope.builtin').grep_string({ search = vim.fn.input('Grep > ') })
 end, { desc = '[P]roject [S]earch (prompt)' })
-vim.keymap.set('n', '<leader>pp', require('telescope.builtin').buffers, { desc = '[P]roject [P]ickers (buffers)' })
+vim.keymap.set('n', '<leader>pp', require('telescope.builtin').git_files, { desc = '[P]roject [P]icker (git files)' })
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
