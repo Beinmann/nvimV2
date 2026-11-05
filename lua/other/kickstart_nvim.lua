@@ -519,7 +519,26 @@ local on_attach = function(_, bufnr)
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
 
-  nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+  -- Rename the symbol under the cursor in every file that references it, then
+  -- write all buffers the rename touched (LSP only edits them in memory).
+  nmap('<leader>rn', function()
+    local group = vim.api.nvim_create_augroup('LspRenameSave', { clear = true })
+    vim.api.nvim_create_autocmd('LspRequest', {
+      group = group,
+      callback = function(ev)
+        local req = ev.data.request
+        if req.method ~= 'textDocument/rename' or req.type == 'pending' then
+          return
+        end
+        vim.api.nvim_del_augroup_by_id(group)
+        -- complete: the edit is applied right after this event, so wait a tick
+        if req.type == 'complete' then
+          vim.defer_fn(function() vim.cmd 'silent! wall' end, 50)
+        end
+      end,
+    })
+    vim.lsp.buf.rename()
+  end, '[R]e[n]ame (all files, saved)')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
   nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
@@ -583,9 +602,9 @@ require('mason-lspconfig').setup()
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
+  clangd = {},
   -- gopls = {},
-  -- pyright = {},
+  pyright = {},
   -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
