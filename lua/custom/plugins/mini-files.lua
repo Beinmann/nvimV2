@@ -5,7 +5,18 @@ return {
   {
     'echasnovski/mini.files',
     version = false,
-    dependencies = { 'echasnovski/mini.icons' },
+    dependencies = {
+      {
+        'echasnovski/mini.icons',
+        -- Default folder glyph (U+F024B) is outside the BMP and often missing from
+        -- terminal font fallbacks; use the Font Awesome folder (U+F07B) instead.
+        opts = {
+          default = {
+            directory = { glyph = '\u{f07b}' },
+          },
+        },
+      },
+    },
     keys = {
       {
         '<leader>pv',
