@@ -6,13 +6,12 @@ Personal Neovim configuration for Linux. Built on top of [kickstart.nvim](https:
 
 - Neovim >= 0.10
 - `git`
-- `tree-sitter-cli` — for compiling treesitter parsers (`sudo apt install tree-sitter-cli`)
 - `make` — for telescope-fzf-native (`sudo apt install make`)
 - `rg` (ripgrep) — for telescope grep (`sudo apt install ripgrep`)
-- A C compiler (`gcc`) — for some treesitter parsers
+- A C compiler (`gcc`/`cc`) — compiles the vendored treesitter grammars locally (optional: without it, regex syntax highlighting is used)
 - `xclip` — for system clipboard integration
 
-On first launch, lazy.nvim will install all plugins automatically. Restart nvim once after that — some plugins (treesitter parsers in particular) need a second launch to fully initialize.
+On first launch, lazy.nvim will install all plugins automatically.
 
 ## Structure
 
@@ -50,7 +49,6 @@ init.lua                        Entry point — loads all modules in order
 | [mason-lspconfig](https://github.com/williamboman/mason-lspconfig.nvim) | Bridges mason and lspconfig |
 | [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | Autocompletion |
 | [LuaSnip](https://github.com/L3MON4D3/LuaSnip) | Snippet engine |
-| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Syntax highlighting and indentation |
 | [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | Fuzzy finder |
 | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Git diff signs and hunk actions |
 | [vim-fugitive](https://github.com/tpope/vim-fugitive) | Git commands inside nvim |
@@ -153,6 +151,11 @@ LSPs are managed by Mason. Run `:Mason` to install language servers. The config 
 
 ## Treesitter
 
-Parsers are installed via `:TSInstall <language>` or automatically when opening a file of that type. Requires `tree-sitter-cli` on the system. The following parsers are set to install on first use: `c`, `cpp`, `go`, `lua`, `python`, `rust`, `tsx`, `javascript`, `typescript`, `vimdoc`, `vim`, `bash`.
+Works fully offline. Grammar sources are vendored in `ts/grammars/` and their queries in `queries/` (all MIT / Apache-2.0, see `THIRD_PARTY.md`). The first time a filetype is opened, its parser is compiled with the system C compiler into `~/.local/share/nvim/site/parser/` (in the background; regex syntax is used until it finishes). No network, `tree-sitter` CLI or nvim-treesitter plugin needed. If no compiler is available, Neovim's regular `syntax` highlighting stays active.
+
+- `:TSBuild [lang...]` — (re)compile parsers; with no argument, all of them.
+- Vendored: `python`, `json`, `html`, `css`, `java`, `sql`, `markdown`, `markdown_inline`, `diff`, `c`, `cpp`, `lua`, `vim`, `bash`, `javascript`, `typescript`, `tsx`, `go`, `rust`, `yaml`, `toml`, `dockerfile`, `make`, `cmake`, `regex`, `gitcommit`, `git_config`.
+- Update or add grammars (needs network, run once on a connected machine, then commit): add the language to `scripts/vendor_ts.lua`, then `git clone --depth 1 https://github.com/nvim-treesitter/nvim-treesitter /tmp/nts && nvim -l scripts/vendor_ts.lua /tmp/nts`.
+- Tree-sitter indentation is not used; Neovim's per-filetype indent is.
 
 Built-in parsers (bundled with Neovim, no install needed): `c`, `lua`, `markdown`, `vim`, `vimdoc`, `query`.

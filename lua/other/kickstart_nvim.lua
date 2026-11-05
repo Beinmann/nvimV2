@@ -287,42 +287,7 @@ require('lazy').setup({
     },
   },
 
-  {
-    'nvim-treesitter/nvim-treesitter',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects',
-    },
-    build = ':TSUpdate',
-    lazy = false,
-    config = function()
-      local ts = require('nvim-treesitter')
-      -- Install parsers upfront
-      if type(ts.install) ~= 'function' then
-        vim.notify('nvim-treesitter: install() not available — run :Lazy update', vim.log.levels.WARN)
-      else
-        ts.install({
-          'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx',
-          'javascript', 'typescript', 'vimdoc', 'vim', 'bash',
-        })
-      end
-
-      vim.api.nvim_create_autocmd('FileType', {
-        group = vim.api.nvim_create_augroup('TreesitterSetup', { clear = true }),
-        callback = function(ev)
-          local lang = vim.treesitter.language.get_lang(ev.match) or ev.match
-          local ok = pcall(vim.treesitter.language.add, lang)
-          if not ok then
-            -- Parser not installed yet — install and wait for next open
-            require('nvim-treesitter').install({ lang })
-            return
-          end
-          -- Enable highlighting and treesitter indentation
-          pcall(vim.treesitter.start, ev.buf, lang)
-          vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-        end,
-      })
-    end,
-  },
+  -- Tree-sitter: vendored grammars compiled locally, see lua/beinmann/treesitter.lua
 
 --   {
 --     'junegunn/vim-journal',
@@ -643,39 +608,37 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 -- Ensure the servers above are installed
 local mason_lspconfig = require 'mason-lspconfig'
 
+-- mason-lspconfig v2 enables installed servers automatically (vim.lsp.enable),
+-- so shared config goes through vim.lsp.config and keymaps through LspAttach.
+vim.lsp.config('*', { capabilities = capabilities })
+
+for name, settings in pairs(servers) do
+  vim.lsp.config(name, { settings = settings, filetypes = settings.filetypes })
+end
+
+vim.lsp.config('pylsp', {
+  settings = {
+    pylsp = {
+      plugins = {
+        flake8      = { enabled = false },
+        pyflakes    = { enabled = false },
+        pycodestyle = { enabled = true, maxLineLength = 120, ignore = { "E501" } },
+      },
+    },
+  },
+})
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspAttach', { clear = true }),
+  callback = function(ev)
+    on_attach(vim.lsp.get_client_by_id(ev.data.client_id), ev.buf)
+  end,
+})
+
 mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
-
-  function(server_name)
-    local opts = {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
-
-    -- override just for pylsp:
-    if server_name == "pylsp" then
-      opts.settings = {
-        pylsp = {
-          plugins = {
-            flake8      = { enabled = false },
-            pyflakes    = { enabled = false },
-            pycodestyle = {
-              enabled       = true,
-              maxLineLength = 120,
-              ignore        = { "E501" },
-            },
-          },
-        },
-      }
-    end
-
-    require("lspconfig")[server_name].setup(opts)
-  end,
+  automatic_enable = true,
 }
-
-
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
