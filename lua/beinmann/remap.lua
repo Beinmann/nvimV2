@@ -5,7 +5,6 @@ vim.keymap.set('v', 'j', 'gj', { noremap = true, silent = true, desc = 'Move dow
 vim.api.nvim_set_keymap('i', '<C-s>', '<ESC>:w<CR>', { noremap = true, silent = true, desc = 'Save file' })
 vim.api.nvim_set_keymap('n', '<C-s>', ':w<CR>', { noremap = true, silent = true, desc = 'Save file' })
 
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = 'Open file explorer' })
 
 local function close_or_explore()
   if vim.fn.winnr('$') > 1 then
